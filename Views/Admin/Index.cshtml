@@ -1,0 +1,145 @@
+@model AdminViewModel
+@{
+    ViewData["Title"] = "لوحة الإدارة";
+    var tab = ViewBag.Tab as string ?? "products";
+    var edit = ViewBag.EditProduct as Product;
+}
+<div class="container" style="padding-bottom:4rem;">
+    <h1 style="font-size:clamp(1.75rem,3vw,2.5rem);font-weight:300;margin:0 0 2rem;">لوحة الإدارة</h1>
+
+    <div class="flex" style="gap:0.5rem;margin-bottom:2rem;flex-wrap:wrap;">
+        <a asp-action="Index" asp-route-tab="products" class="filter-pill @(tab == "products" ? "active" : "")">المنتجات</a>
+        <a asp-action="Index" asp-route-tab="orders" class="filter-pill @(tab == "orders" ? "active" : "")">الطلبات</a>
+    </div>
+
+    @if (tab == "products")
+    {
+        <div style="margin-bottom:2rem;">
+            <h2 class="text-muted" style="font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 1rem;">
+                @(edit == null ? "إضافة منتج" : "تعديل منتج")
+            </h2>
+            <form asp-action="SaveProduct" method="post" style="max-width:32rem;display:flex;flex-direction:column;gap:1rem;padding:1.5rem;border:1px solid var(--border);border-radius:2px;background:var(--card);">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="Id" value="@edit?.Id" />
+                <div>
+                    <label class="label">الاسم</label>
+                    <input class="field-input" name="Name" value="@edit?.Name" required />
+                </div>
+                <div>
+                    <label class="label">الوصف</label>
+                    <textarea class="field-input" name="Description" rows="2">@edit?.Description</textarea>
+                </div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+                    <div>
+                        <label class="label">السعر (ج.م)</label>
+                        <input class="field-input" name="Price" type="number" step="0.01" value="@(edit?.Price.ToString(System.Globalization.CultureInfo.InvariantCulture) ?? "")" required />
+                    </div>
+                    <div>
+                        <label class="label">التصنيف</label>
+                        <select class="field-input" name="Category">
+                            @foreach (Category c in Enum.GetValues<Category>())
+                            {
+                                if (edit != null && edit.Category == c)
+                                {
+                                    <option value="@c" selected>@CategoryLabels.Arabic(c)</option>
+                                }
+                                else
+                                {
+                                    <option value="@c">@CategoryLabels.Arabic(c)</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="label">رابط الصورة</label>
+                    <input class="field-input" name="ImageUrl" value="@edit?.ImageUrl" placeholder="/images/placeholder.svg" />
+                </div>
+                <div>
+                    <input type="hidden" name="Featured" value="false" />
+                    <label class="flex" style="gap:0.5rem;align-items:center;cursor:pointer;">
+                        <input type="checkbox" name="Featured" value="true" checked="@(edit?.Featured == true)" />
+                        <span>مميز</span>
+                    </label>
+                </div>
+                <div class="flex" style="gap:0.5rem;">
+                    <button type="submit" class="btn btn-primary">@(edit == null ? "إضافة" : "حفظ")</button>
+                    @if (edit != null)
+                    {
+                        <a asp-action="Index" asp-route-tab="products" class="btn btn-ghost">إلغاء</a>
+                    }
+                </div>
+            </form>
+        </div>
+
+        <div style="overflow-x:auto;">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>المنتج</th>
+                        <th>التصنيف</th>
+                        <th>السعر</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var p in Model.Products)
+                    {
+                        <tr>
+                            <td>@p.Name</td>
+                            <td class="text-muted">@CategoryLabels.Arabic(p.Category)</td>
+                            <td>@p.Price.ToString("N0") ج.م</td>
+                            <td>
+                                <a asp-action="Index" asp-route-tab="products" asp-route-edit="@p.Id" class="text-muted" style="font-size:0.75rem;">
+                                    تعديل
+                                </a>
+                                <form asp-action="DeleteProduct" method="post" style="display:inline;margin-inline-start:0.75rem;">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@p.Id" />
+                                    <button type="submit" class="text-muted" style="background:none;border:none;cursor:pointer;font-size:0.75rem;color:var(--destructive);" onclick="return confirm('حذف هذا المنتج؟');">حذف</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+    else
+    {
+        @if (Model.Orders.Count == 0)
+        {
+            <p class="text-muted text-center" style="padding:3rem;">لا توجد طلبات بعد.</p>
+        }
+        else
+        {
+            @foreach (var o in Model.Orders)
+            {
+                <div style="border:1px solid var(--border);border-radius:2px;padding:1.5rem;margin-bottom:1.5rem;background:var(--card);">
+                    <div class="flex-between" style="flex-wrap:wrap;gap:1rem;">
+                        <div>
+                            <p class="text-muted" style="font-size:0.75rem;margin:0;">طلب #@o.Id.ToString("N").Substring(0, 8)</p>
+                            <p style="font-size:1.125rem;margin:0.25rem 0 0;font-family:'Amiri',serif;">@o.CustomerName</p>
+                            <p class="text-muted" style="margin:0.25rem 0 0;font-size:0.875rem;">@o.Phone</p>
+                            <p class="text-muted" style="margin:0.25rem 0 0;font-size:0.875rem;">@o.Address</p>
+                        </div>
+                        <div style="text-align:end;">
+                            <p style="font-size:1.25rem;font-family:'Amiri',serif;margin:0;">@o.Total.ToString("N0") ج.م</p>
+                            <p style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;color:var(--primary);margin:0.25rem 0 0;">@CategoryLabels.OrderStatusArabic(o.Status)</p>
+                            <p class="text-muted" style="font-size:0.75rem;margin:0.25rem 0 0;">@o.CreatedAt.ToLocalTime().ToString("g", System.Globalization.CultureInfo.GetCultureInfo("ar-EG"))</p>
+                        </div>
+                    </div>
+                    <div style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                        @foreach (var line in o.Lines)
+                        {
+                            <div class="flex-between" style="font-size:0.875rem;margin-bottom:0.35rem;">
+                                <span>@line.Product.Name × @line.Quantity</span>
+                                <span class="text-muted">@((line.Product.Price * line.Quantity).ToString("N0")) ج.م</span>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
+    }
+</div>

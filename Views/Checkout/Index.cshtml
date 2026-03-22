@@ -1,0 +1,55 @@
+@model CheckoutInputModel
+@inject ICartService Cart
+@{
+    ViewData["Title"] = "إتمام الطلب";
+}
+<div class="container" style="max-width:52rem;padding-bottom:4rem;">
+    <h1 style="font-size:clamp(1.75rem,3vw,2.5rem);font-weight:300;margin:0 0 2.5rem;">إتمام الطلب</h1>
+
+    <div style="display:grid;gap:3rem;grid-template-columns:1fr;" class="checkout-grid">
+        <style>
+            @@media (min-width: 900px) {
+                .checkout-grid { grid-template-columns: 3fr 2fr !important; }
+            }
+        </style>
+        <form asp-action="Index" asp-controller="Checkout" method="post" style="display:flex;flex-direction:column;gap:1.5rem;">
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="ModelOnly" class="field-error"></div>
+            <div>
+                <label class="label" asp-for="CustomerName"></label>
+                <input class="field-input" asp-for="CustomerName" />
+                <span asp-validation-for="CustomerName" class="field-error"></span>
+            </div>
+            <div>
+                <label class="label" asp-for="Phone"></label>
+                <input class="field-input" asp-for="Phone" type="tel" />
+                <span asp-validation-for="Phone" class="field-error"></span>
+            </div>
+            <div>
+                <label class="label" asp-for="Address"></label>
+                <textarea class="field-input" asp-for="Address" rows="3" style="resize:none;"></textarea>
+                <span asp-validation-for="Address" class="field-error"></span>
+            </div>
+            <div style="padding:1rem;background:var(--cream);border-radius:2px;">
+                <p class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 0.25rem;">طريقة الدفع</p>
+                <p style="margin:0;">الدفع عند الاستلام</p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">تأكيد الطلب — @Cart.Total.ToString("N0") ج.م</button>
+        </form>
+
+        <div>
+            <p class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 1rem;">ملخص الطلب</p>
+            @foreach (var line in Cart.GetLines())
+            {
+                <div class="flex-between" style="font-size:0.875rem;margin-bottom:0.75rem;">
+                    <span>@line.Product.Name × @line.Quantity</span>
+                    <span class="text-muted">@((line.Product.Price * line.Quantity).ToString("N0")) ج.م</span>
+                </div>
+            }
+            <div class="flex-between" style="margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);">
+                <span class="text-muted">الإجمالي</span>
+                <span style="font-size:1.25rem;font-family:'Amiri',serif;">@Cart.Total.ToString("N0") ج.م</span>
+            </div>
+        </div>
+    </div>
+</div>

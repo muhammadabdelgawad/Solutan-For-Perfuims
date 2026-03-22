@@ -1,0 +1,44 @@
+@model HomeIndexViewModel
+@{
+    ViewData["Title"] = "الرئيسية";
+}
+<section class="hero">
+    <img class="bg" src="~/images/placeholder.svg" alt="" />
+    <div class="overlay"></div>
+    <div class="container inner">
+        <h1>فنّ الجمال الراقي</h1>
+        <p class="mt-4">
+            اكتشف مجموعتنا المختارة من العطور الفاخرة ومستحضرات التجميل، من أجل من يقدّر التميز.
+        </p>
+        <a asp-controller="Products" asp-action="Index" class="btn btn-ghost mt-8" style="margin-top:2rem;">استكشف المجموعة ←</a>
+    </div>
+</section>
+
+<section class="container" style="padding:5rem 0;">
+    <div class="flex-between mb-8" style="flex-wrap:wrap;gap:1rem;">
+        <div>
+            <p class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 0.5rem;">اختيار مميز</p>
+            <h2 style="font-size:clamp(1.75rem,3vw,2.5rem);margin:0;">منتجات مميزة</h2>
+        </div>
+        <a asp-controller="Products" asp-action="Index" class="text-muted" style="font-size:0.875rem;">عرض الكل ←</a>
+    </div>
+    <div class="product-grid">
+        @foreach (var p in Model.Featured)
+        {
+            <partial name="_ProductCard" model="p" />
+        }
+    </div>
+</section>
+
+<section class="container" style="padding-bottom:5rem;">
+    <div class="cat-grid">
+        @foreach (var kv in Model.CategoryHeroImages)
+        {
+            <a asp-controller="Products" asp-action="Index" asp-route-category="@kv.Key" class="cat-tile">
+                <img src="@kv.Value" alt="@CategoryLabels.Arabic(kv.Key)" />
+                <div class="shade"></div>
+                <h3>@CategoryLabels.Arabic(kv.Key)</h3>
+            </a>
+        }
+    </div>
+</section>

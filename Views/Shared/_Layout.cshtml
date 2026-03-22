@@ -1,0 +1,87 @@
+@inject ICartService Cart
+@{
+    var cartCount = Cart.ItemCount;
+}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] — سلطان العطور</title>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header class="site-header">
+        <nav class="container site-nav">
+            <details class="mobile-nav">
+                <summary aria-label="القائمة">☰</summary>
+                <div class="mobile-panel">
+                    <a asp-controller="Home" asp-action="Index">الرئيسية</a>
+                    <a asp-controller="Products" asp-action="Index">المتجر</a>
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Perfumes">عطور</a>
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Makeup">مكياج</a>
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Skincare">عناية بالبشرة</a>
+                    <a asp-controller="Admin" asp-action="Index">الإدارة</a>
+                </div>
+            </details>
+
+            <a asp-controller="Home" asp-action="Index" class="brand">سلطان العطور</a>
+
+            <div class="nav-links">
+                <a asp-controller="Home" asp-action="Index">الرئيسية</a>
+                <a asp-controller="Products" asp-action="Index">المتجر</a>
+                <a asp-controller="Products" asp-action="Index" asp-route-category="Perfumes">عطور</a>
+                <a asp-controller="Products" asp-action="Index" asp-route-category="Makeup">مكياج</a>
+                <a asp-controller="Products" asp-action="Index" asp-route-category="Skincare">عناية بالبشرة</a>
+            </div>
+
+            <div class="nav-actions">
+                <a asp-controller="Products" asp-action="Index" title="بحث">🔍</a>
+                <a asp-controller="Cart" asp-action="Index" class="cart-badge" title="السلة">
+                    🛍
+                    @if (cartCount > 0)
+                    {
+                        <span class="count">@cartCount</span>
+                    }
+                </a>
+                <a asp-controller="Admin" asp-action="Index" class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;display:none;" id="admin-desktop">إدارة</a>
+            </div>
+        </nav>
+    </header>
+    <style>
+        @@media (min-width: 768px) { #admin-desktop { display: inline !important; } }
+    </style>
+
+    <main class="main-pad">
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container grid" style="display:grid;gap:3rem;padding:4rem 0;">
+            <div>
+                <h4 class="font-serif" style="font-size:1.5rem;margin:0 0 1rem;">سلطان العطور</h4>
+                <p class="text-muted" style="font-size:0.875rem;line-height:1.7;max-width:20rem;">
+                    عطور فاخرة ومستحضرات تجميل مختارة بعناية لمن يقدّر التفاصيل.
+                </p>
+            </div>
+            <div>
+                <h5 class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 1rem;">تسوق</h5>
+                <div style="display:flex;flex-direction:column;gap:0.5rem;">
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Perfumes">عطور</a>
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Makeup">مكياج</a>
+                    <a asp-controller="Products" asp-action="Index" asp-route-category="Skincare">عناية بالبشرة</a>
+                </div>
+            </div>
+            <div>
+                <h5 class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 1rem;">تواصل</h5>
+                <p class="text-muted" style="font-size:0.875rem;margin:0;">شارع أحمد عرابي، مول البهاء، مركز الواسطي</p>
+                <p style="margin:0.5rem 0 0;font-size:1.1rem;letter-spacing:0.05em;">01093139451</p>
+            </div>
+        </div>
+        <div class="footer-copy">
+            © @DateTime.UtcNow.Year سلطان العطور. جميع الحقوق محفوظة.
+        </div>
+    </footer>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

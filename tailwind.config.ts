@@ -65,8 +65,8 @@ export default {
         },
       },
       fontFamily: {
-        serif: ['Cormorant Garamond', 'Georgia', 'serif'],
-        sans: ['Outfit', 'system-ui', 'sans-serif'],
+        serif: ['Amiri', 'Georgia', 'serif'],
+        sans: ['Tajawal', 'system-ui', 'sans-serif'],
       },
       borderRadius: {
         lg: "var(--radius)",

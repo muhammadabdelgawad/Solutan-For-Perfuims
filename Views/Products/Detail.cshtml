@@ -1,0 +1,63 @@
+@model ProductDetailViewModel
+@{
+    ViewData["Title"] = Model.Product.Name;
+    var returnUrl = Url.Action("Index", "Products") ?? "/Products";
+}
+<div class="container" style="padding-bottom:4rem;">
+    <a href="@returnUrl" class="text-muted" style="font-size:0.875rem;display:inline-flex;align-items:center;gap:0.35rem;margin-bottom:2rem;">→ العودة للمتجر</a>
+
+    <div class="detail-two-col">
+        <div class="luxury-card card-img" style="border-radius:2px;aspect-ratio:3/4;">
+            <img src="@Model.Product.ImageUrl" alt="@Model.Product.Name" style="width:100%;height:100%;object-fit:cover;" />
+        </div>
+        <div style="display:flex;flex-direction:column;justify-content:center;">
+            <p class="text-muted" style="font-size:0.7rem;letter-spacing:0.08em;text-transform:uppercase;margin:0 0 0.5rem;">@CategoryLabels.Arabic(Model.Product.Category)</p>
+            <h1 style="font-size:clamp(1.75rem,4vw,3rem);line-height:1.1;margin:0;">@Model.Product.Name</h1>
+            <p style="font-size:1.5rem;margin:1rem 0 0;">@Model.Product.Price.ToString("N0") ج.م</p>
+            <p class="text-muted" style="line-height:1.8;margin:1.5rem 0 0;max-width:28rem;">@Model.Product.Description</p>
+
+            <form asp-controller="Cart" asp-action="Add" method="post" style="margin-top:2rem;">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="productId" value="@Model.Product.Id" />
+                <input type="hidden" name="returnUrl" value="@(Context.Request.Path + Context.Request.QueryString)" />
+                <button type="submit" class="btn btn-primary">أضف إلى السلة</button>
+            </form>
+
+            <div style="margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;font-size:0.875rem;">
+                    <div>
+                        <p class="text-muted" style="margin:0 0 0.25rem;">الشحن</p>
+                        <p style="margin:0;">توصيل عادي مجاني</p>
+                    </div>
+                    <div>
+                        <p class="text-muted" style="margin:0 0 0.25rem;">الإرجاع</p>
+                        <p style="margin:0;">إرجاع خلال 30 يوماً</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model.Related.Count > 0)
+    {
+        <h2 style="font-size:clamp(1.5rem,3vw,2rem);margin:4rem 0 2rem;">قد يعجبك أيضاً</h2>
+        <div class="product-grid" style="grid-template-columns:repeat(2,1fr);">
+            @foreach (var p in Model.Related)
+            {
+                <partial name="_ProductCard" model="p" />
+            }
+        </div>
+    }
+</div>
+<style>
+    .detail-two-col {
+        display: grid;
+        gap: 2rem;
+    }
+    @@media (min-width: 768px) {
+        .detail-two-col {
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+    }
+</style>

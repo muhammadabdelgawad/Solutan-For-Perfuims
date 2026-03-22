@@ -3,30 +3,30 @@
 @{
     ViewData["Title"] = "سلة التسوق";
 }
-<div class="container" style="max-width:48rem;padding-bottom:4rem;">
+<div class="container section-block" style="max-width:48rem;">
     @if (Model.Count == 0)
     {
-        <div class="text-center" style="padding:3rem 0;">
-            <p style="font-size:3rem;opacity:0.25;margin:0;">🛍</p>
-            <h1 style="font-size:1.75rem;margin:1rem 0;">سلتك فارغة</h1>
-            <p class="text-muted mb-8">تصفّح المنتجات واختر ما يناسبك.</p>
+        <div class="text-center" style="padding:4rem 0;">
+            <p style="font-size:3rem;opacity:0.2;margin:0;">🛍</p>
+            <h1 class="page-title" style="margin:1.25rem 0 0.75rem;">سلتك فارغة</h1>
+            <p class="text-muted mb-8" style="font-weight:300;font-size:1.05rem;">تصفّح المنتجات واختر ما يناسبك.</p>
             <a asp-controller="Products" asp-action="Index" class="btn btn-primary">متابعة التسوق</a>
         </div>
     }
     else
     {
-        <h1 style="font-size:clamp(1.75rem,3vw,2.5rem);font-weight:300;margin:0 0 2.5rem;">سلة التسوق</h1>
+        <h1 class="page-title">سلة التسوق</h1>
 
         @foreach (var line in Model)
         {
             <div class="flex-between" style="gap:1rem;padding-bottom:1.5rem;margin-bottom:1.5rem;border-bottom:1px solid var(--border);align-items:flex-start;">
-                <a asp-controller="Products" asp-action="Detail" asp-route-id="@line.Product.Id" class="card-img" style="width:5rem;min-width:5rem;aspect-ratio:3/4;border-radius:2px;">
-                    <img src="@line.Product.ImageUrl" alt="" style="width:100%;height:100%;object-fit:cover;" />
+                <a asp-controller="Products" asp-action="Detail" asp-route-id="@line.Product.Id" class="card-img cart-line-thumb">
+                    <img src="@line.Product.ImageUrl" alt="" />
                 </a>
                 <div style="flex:1;">
                     <div class="flex-between" style="align-items:flex-start;">
                         <div>
-                            <h3 style="font-size:1.125rem;margin:0;">@line.Product.Name</h3>
+                            <h3 style="font-size:1.15rem;margin:0;font-family:'El Messiri',Georgia,serif;font-weight:500;">@line.Product.Name</h3>
                             <p class="text-muted" style="font-size:0.7rem;margin:0.25rem 0 0;">@CategoryLabels.Arabic(line.Product.Category)</p>
                         </div>
                         <form asp-controller="Cart" asp-action="Remove" method="post" style="margin:0;">
@@ -52,7 +52,7 @@
         <div style="margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border);">
             <div class="flex-between mb-8">
                 <span class="text-muted" style="font-size:0.8rem;letter-spacing:0.08em;text-transform:uppercase;">الإجمالي</span>
-                <span style="font-size:1.75rem;font-family:'Amiri',serif;">@Cart.Total.ToString("N0") ج.م</span>
+                <span class="cart-total-amount">@Cart.Total.ToString("N0") ج.م</span>
             </div>
             <a asp-controller="Checkout" asp-action="Index" class="btn btn-primary btn-block">إتمام الطلب</a>
         </div>

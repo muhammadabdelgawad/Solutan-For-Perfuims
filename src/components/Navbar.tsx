@@ -24,7 +24,7 @@ export default function Navbar() {
         </button>
 
         <Link to="/" className="font-serif text-xl md:text-2xl tracking-tight font-semibold text-foreground">
-          LUMIÈRE
+          سلطان العطور
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

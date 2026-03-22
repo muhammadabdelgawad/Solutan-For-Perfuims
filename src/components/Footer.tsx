@@ -5,7 +5,7 @@ export default function Footer() {
     <footer className="border-t border-border mt-24">
       <div className="container py-16 grid grid-cols-1 md:grid-cols-3 gap-12">
         <div>
-          <h4 className="font-serif text-2xl font-semibold mb-4 text-foreground">LUMIÈRE</h4>
+          <h4 className="font-serif text-2xl font-semibold mb-4 text-foreground">سلطان العطور</h4>
           <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
             Curated luxury fragrances and cosmetics for the discerning individual.
           </p>
@@ -29,7 +29,7 @@ export default function Footer() {
       </div>
       <div className="border-t border-border py-6">
         <p className="text-center text-xs text-muted-foreground tracking-wider">
-          © 2026 LUMIÈRE. All rights reserved.
+          © 2026 سلطان العطور. All rights reserved.
         </p>
       </div>
     </footer>
